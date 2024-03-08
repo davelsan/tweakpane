@@ -41,7 +41,10 @@ function createBindingTarget<O extends Bindable, Key extends keyof O>(
 	if (!BindingTarget.isBindable(obj)) {
 		throw TpError.notBindable();
 	}
-	return new BindingTarget(obj, key as string);
+	if (obj instanceof BindingTarget) {
+		return obj;
+	}
+	return new BindingTarget(obj, key) as BindingTarget;
 }
 
 /**

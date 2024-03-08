@@ -5,17 +5,20 @@ export type Bindable = Record<string, any>;
 /**
  * A binding target.
  */
-export class BindingTarget {
+export class BindingTarget<
+	T extends Bindable = Bindable,
+	K extends keyof T = keyof T,
+> {
 	/**
 	 * The property name of the binding.
 	 */
-	public readonly key: string;
-	private readonly obj_: Bindable;
+	public readonly key: K;
+	private readonly obj_: T;
 
 	/**
 	 * @hidden
 	 */
-	constructor(obj: Bindable, key: string) {
+	constructor(obj: T, key: K) {
 		this.obj_ = obj;
 		this.key = key;
 	}
@@ -34,7 +37,7 @@ export class BindingTarget {
 	 * Read a bound value.
 	 * @return A bound value
 	 */
-	public read(): unknown {
+	public read(): T[K] {
 		return this.obj_[this.key];
 	}
 
@@ -42,7 +45,7 @@ export class BindingTarget {
 	 * Write a value.
 	 * @param value The value to write to the target.
 	 */
-	public write(value: unknown): void {
+	public write(value: T[K]): void {
 		this.obj_[this.key] = value;
 	}
 
@@ -51,14 +54,14 @@ export class BindingTarget {
 	 * @param name The property name.
 	 * @param value The value to write to the target.
 	 */
-	public writeProperty(name: string, value: unknown): void {
+	public writeProperty(name: K, value: T[K]): void {
 		const valueObj = this.read();
 
 		if (!BindingTarget.isBindable(valueObj)) {
 			throw TpError.notBindable();
 		}
 		if (!(name in valueObj)) {
-			throw TpError.propertyNotFound(name);
+			throw TpError.propertyNotFound(name as string);
 		}
 		valueObj[name] = value;
 	}
