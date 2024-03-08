@@ -13,7 +13,6 @@
     "tsconfig": "./src/tsconfig.json"
   },
   "scripts": {
-    "prebuild": "npm install",
     "prepack": "run-s clean build",
     "prepublishOnly": "npm test",
     "start": "run-s build watch",
